@@ -1,4 +1,4 @@
-#Passworld
+# Passworld
 pour compiler:
 ```bash
 $ gcc -o main -Wall -Werror main.c
