@@ -147,7 +147,7 @@ void encrypt_decrypt(){
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 	//-----------------
 	printf("===============\n");
-	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-128-cbc -iv \"%d\" -iter 100 -in plain.txt -out plain.enc",make_vector(nom));
+	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-128-cbc -iv \"%d\" -iter 100 -in tmp -out plain.enc",make_vector(nom));
 	printf("here=%s",buffer);
 	printf("hello %d",(system(buffer)));
 	printf("===============\n");
