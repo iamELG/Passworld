@@ -118,16 +118,54 @@ Trinom *extraire(char *filename){
 }
 //======================================================================
 //======================================================================
-int main(int argc, char *argv[]){
-	extraire(argv[1]);
+int make_vector(char mot[]){
+	int total=0;
+	int i=0;
+	while(mot[i]!='\0'){
+		total+=(i+1)*mot[i];
+		++i;
+	}
+	return total;
+}
+void test_make_vector(){
+	printf("bob=%d\n",make_vector("bob"));
+	printf("aob=%d\n",make_vector("aob"));
+	printf("boa=%d\n",make_vector("boa"));
+	printf("alice=%d\n",make_vector("alice"));
+	printf("aliceetbob=%d\n",make_vector("aliceetbob"));
+}
+//======================================================================
+//======================================================================
+void encrypt_decrypt(){
+	//le nom est utiliser comme vecteur d'initialisation 
+	char nom[20];
+	printf("hello\n");
+	printf("c'est quoi ton nom:");
+	scanf("%s",nom);
 	
-	/*
-	//lire une ligne
-	afficher_mot_de_pass(fd);
-	*/
+	
+	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
+	//-----------------
+	printf("===============\n");
+	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-128-cbc -iv \"%d\" -iter 100 -in plain.txt -out plain.enc",make_vector(nom));
+	printf("here=%s",buffer);
+	printf("hello %d",(system(buffer)));
+	printf("===============\n");
+	//-----------------
+	snprintf(buffer,TAILLBUFFER , "cat texteenchiffrer");
+	system(buffer);
+	printf("===============\n");
+	//-----------------
+	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-128-cbc -iv \"%d\" -iter 100 -in plain.enc -out claire.txt",make_vector(nom));
+	system(buffer);
+	printf("===============\n");
+}
+//======================================================================
+//======================================================================
+int main(int argc, char *argv[]){
+	//extraire(argv[1]);
+	encrypt_decrypt();
 
-	//Trinom *luthor =ajout();
-	//afficher(*luthor);
 	
 	return(0);
 }
