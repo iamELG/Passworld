@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
 #include <string.h>
 
 #define TAILLNOM 100
@@ -225,12 +223,8 @@ void to_txt(char nom[],Trinom tri[]){
 //======================================================================
 //======================================================================
 void save_and_quit(char nom[],Trinom vault[]){
-	//ecirt dans le txt
-	//chiffrer   le txt
-	//suprimer   le txt
 
 	to_txt(nom,vault);
-	//printf("here");
 	encrypt(nom);
 	clear(nom);	
 }
