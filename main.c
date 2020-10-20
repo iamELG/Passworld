@@ -139,7 +139,6 @@ Trinom *extraire(char *filename){
 	char ligne[TAILLBUFFER];
 	while(fgets(ligne,TAILLBUFFER, fd)){
 		tri[i]=*extraire_ligne(ligne);
-		//afficher(tri[i]);
 		i++;
 	}
 	
@@ -172,19 +171,21 @@ void test_make_vector(){
 void encrypt(char nom[]){
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 	printf("===============\n");
-	//snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-128-cbc -iv \"%d\" -iter 100 -in %s.txt -out %s.enc",make_vector(nom),nom,nom);
-	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-128-cbc -iv \"%d\" -iter 100 -in %s.txt -out %s..enc",make_vector(nom),nom,nom);
+	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-128-cbc -iv \"%d\" -iter 100 -in %s.txt -out %s.enc",make_vector(nom),nom,nom);
 	(system(buffer));
 	printf("===============\n");	
 }
 //======================================================================
 //======================================================================
-void decrypt(char nom[]){
+int decrypt(char nom[]){
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
+	int returnvalue=-1;
 	printf("===============\n");
-	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-128-cbc -iv \"%d\" -iter 100 -in %s.enc -out %s.txtout",make_vector(nom),nom,nom);
-	system(buffer);
+	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-128-cbc -iv \"%d\" -iter 100 -in %s.enc -out %s.txt",make_vector(nom),nom,nom);
+	returnvalue=system(buffer);
+//	printf("##################%d",returnvalue);
 	printf("===============\n");
+	return returnvalue;
 }
 //======================================================================
 //======================================================================
@@ -208,25 +209,32 @@ void encrypt_decrypt(char nom[]){
 //======================================================================
 void to_txt(char nom[],Trinom tri[]){
 	char *name=(char*)malloc(TAILLBUFFER*sizeof(char));
-	snprintf(name, TAILLBUFFER, "%s.txt",nom);//+.txt
+	snprintf(name, TAILLBUFFER, "./%s.txt",nom);//+.txt
+	
+	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
+	snprintf(buffer,TAILLBUFFER , "touch %s",name);
+	system(buffer);
 	
 	FILE *fd;
 	fd=fopen(name,"w");
 	
 	for(int i=0;i<100;++i){
-		if (tri[i].nom[0]=='\0')
+		if (tri[i].nom[0]=='\0'){
 			break;
+		}
 		fprintf(fd,"%s,%s,%s\n",tri[i].nom,tri[i].login,tri[i].mdp);
 	}
-	printf("finish");
+	fclose(fd);
 }
 //======================================================================
 //======================================================================
 void save_and_quit(char nom[],Trinom vault[]){
-
 	to_txt(nom,vault);
 	encrypt(nom);
-	clear(nom);	
+	char *name=(char*)malloc(TAILLBUFFER*sizeof(char));
+	snprintf(name, TAILLBUFFER, "%s.txt",nom);//+.txt
+	clear(name);	
+	exit(0);
 }
 //======================================================================
 //======================================================================
@@ -236,10 +244,16 @@ Trinom *start(char nom []){
 	printf("dechiffer la vault (O/n)?");
 	scanf("%s",select);
 	if(select[0]=='0'||select[0]=='O'||select[0]=='o'){
-		decrypt(nom);
+		int bool=decrypt(nom);
+		if (bool!=0){
+			printf("#####\n#####\n#####\n#####\n#####\n");
+			printf("Bad decrypt retry\n");
+			printf("#####\n");
+			return (start(nom));
+		}
 		//TODO if fail mot de pass arreter
 		char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
-		snprintf(buffer,TAILLBUFFER , "%s.txtout",nom);
+		snprintf(buffer,TAILLBUFFER , "%s.txt",nom);
 		Trinom* tri= extraire(buffer);
 		clear(buffer);
 		
@@ -258,7 +272,7 @@ void menu(char nom [],Trinom vault[]){
 		printf("1: achiffer list\n");
 		printf("2: achiffer d'identifient et mdp\n");
 		printf("3: ajouter d'identifient et mdp\n");
-		printf("4: supromer un login mdp\n");
+		printf("4: suprimer un login mdp\n");
 		printf("5: save and quit\n");
 		printf("6: quit(les modification seron perdue)\n");
 		printf("selectioner le mode avec le numero:");
@@ -287,10 +301,7 @@ void menu(char nom [],Trinom vault[]){
 }
 //======================================================================
 //======================================================================
-int main(int argc, char *argv[]){
-	test_make_vector();
-	//extraire(argv[1]);
-	
+int main(){
 	char nom[TAILLBUFFER];
 	printf("hello\n");//TODO metre un message d'acueille un peux mieux =)
 	printf("c'est quoi ton nom:");
