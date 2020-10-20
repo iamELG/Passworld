@@ -183,7 +183,6 @@ int decrypt(char nom[]){
 	printf("===============\n");
 	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-128-cbc -iv \"%d\" -iter 100 -in %s.enc -out %s.txt",make_vector(nom),nom,nom);
 	returnvalue=system(buffer);
-//	printf("##################%d",returnvalue);
 	printf("===============\n");
 	return returnvalue;
 }
@@ -194,16 +193,6 @@ void clear(char nom[]){
 	//todo mettre shred
 	snprintf(buffer,TAILLBUFFER , "rm %s",nom);
 	system(buffer);
-}
-//======================================================================
-//======================================================================
-void encrypt_decrypt(char nom[]){
-	//le nom est utiliser comme vecteur d'initialisation 
-	
-	//-----------------
-	encrypt(nom);
-	//-----------------
-	decrypt(nom);
 }
 //======================================================================
 //======================================================================
@@ -251,7 +240,6 @@ Trinom *start(char nom []){
 			printf("#####\n");
 			return (start(nom));
 		}
-		//TODO if fail mot de pass arreter
 		char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 		snprintf(buffer,TAILLBUFFER , "%s.txt",nom);
 		Trinom* tri= extraire(buffer);
