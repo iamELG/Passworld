@@ -166,7 +166,7 @@ int make_vector(char mot[]){
 	}
 	return total;
 }
-
+//======================================================================
 void test_make_vector(){
 	printf("bob=%d\n",make_vector("bob"));
 	printf("aob=%d\n",make_vector("aob"));
@@ -179,7 +179,7 @@ void test_make_vector(){
 void encrypt(char nom[]){
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 	printf("===============\n");
-	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-128-cbc -iv \"%d\" -iter 100 -in %s.txt -out %s.enc",make_vector(nom),nom,nom);
+	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-256-cbc -iv \"%d\" -iter 100 -in %s.txt -out %s.enc",make_vector(nom),nom,nom);
 	(system(buffer));
 	printf("===============\n");	
 }
@@ -188,7 +188,7 @@ int decrypt(char nom[]){
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 	int returnvalue=-1;
 	printf("===============\n");
-	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-128-cbc -iv \"%d\" -iter 100 -in %s.enc -out %s.txt",make_vector(nom),nom,nom);
+	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-256-cbc -iv \"%d\" -iter 100 -in %s.enc -out %s.txt",make_vector(nom),nom,nom);
 	returnvalue=system(buffer);
 	printf("===============\n");
 	return returnvalue;
@@ -291,7 +291,7 @@ void menu(char nom [],Trinom vault[]){
 //======================================================================
 int main(){
 	char nom[TAILLBUFFER];
-	printf("Passworld - Gestionnaire de mot de passe - v0.9\n");//TODO metre un message d'acueille un peux mieux =)
+	printf("Passworld - Gestionnaire de mot de passe - v0.9\n");
 	printf("Entrez un nom :");
 	scanf("%s",nom);
 	//-------
