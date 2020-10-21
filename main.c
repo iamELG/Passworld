@@ -14,6 +14,25 @@ typedef struct trinom{
 	char mdp[TAILLMOTDEPASS];
 }Trinom;
 //======================================================================
+Trinom *alloue(char *nom, char *login, char *mdp);
+void afficher_mdp(Trinom afficher);
+Trinom *ajout(void);
+void afficher_nom(Trinom afficher,int valeur);
+void afficher_list(Trinom afficher[]);
+void afficher_select(Trinom afficher[]);
+void ajout_select(Trinom tri[]);
+Trinom *extraire_ligne(char ligne[]);
+Trinom *extraire(char *filename);
+int make_vector(char mot[]);
+void test_make_vector(void);
+void encrypt(char nom[]);
+int decrypt(char nom[]);
+void clear(char nom[]);
+void to_txt(char nom[],Trinom tri[]);
+void save_and_quit(char nom[],Trinom vault[]);
+Trinom *start(char nom []);
+void menu(char nom [],Trinom vault[]);
+//======================================================================
 Trinom *alloue(char *nom, char *login, char *mdp){
 	Trinom *tmp=(Trinom*)malloc(sizeof(Trinom));
 	if (tmp==NULL) return NULL;
@@ -208,7 +227,6 @@ void save_and_quit(char nom[],Trinom vault[]){
 	char *name=(char*)malloc(TAILLBUFFER*sizeof(char));
 	snprintf(name, TAILLBUFFER, "%s.txt",nom);//+.txt
 	clear(name);	
-	exit(0);
 }
 //======================================================================
 Trinom *start(char nom []){
@@ -263,12 +281,12 @@ void menu(char nom [],Trinom vault[]){
 		}
 		else if(select==5){
 			save_and_quit(nom,vault);
+			break;
 		}
 		else if(select==6){
-			exit(0);
+			break;
 		}
-	}
-	return;
+	}	
 }
 //======================================================================
 int main(){
