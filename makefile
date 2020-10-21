@@ -1,4 +1,5 @@
 all:
-	gcc -o main -Wall -Werror main.c
-clang:
-	clang -o login -lssl -lcrypto login.c
+	clang -Weverything -o main main.c
+
+gcc:
+	gcc -Wall -Wextra -o main main.c

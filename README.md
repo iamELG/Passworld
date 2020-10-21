@@ -1,7 +1,12 @@
 # Passworld
-pour compiler:
+pour compiler avec clang
 ```bash
-$ gcc -o main -Wall -Werror main.c
+	make 
+```
+
+pour compiler avec gcc
+```bash
+	make gcc
 ```
 
 pour executer:
