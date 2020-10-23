@@ -1,5 +1,8 @@
-all:
-	clang -Weverything -o main main.c
-
+clang:
+	clang -Weverything -pedantic -o main main.c 
+	
 gcc:
-	gcc -Wall -Wextra -o main main.c
+	gcc -W -Wall -pedantic -o main main.c 
+
+cppcheck:
+	cppcheck main.c

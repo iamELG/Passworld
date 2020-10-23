@@ -138,8 +138,6 @@ Trinom *extraire(char *filename){
 		printf("Fichier introuvable \n");
 		return NULL;
 	}
-	//ouvrir la vault
-	printf("Fichier ouvert \n");
 	
 	Trinom *tri=(Trinom*)malloc(100*sizeof(Trinom));
 	for(int i=0;i<100;++i)
@@ -181,7 +179,9 @@ void encrypt(char nom[]){
 	printf("===============\n");
 	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-256-cbc -iv \"%d\" -iter 100 -in %s.txt -out %s.enc",make_vector(nom),nom,nom);
 	(system(buffer));
-	printf("===============\n");	
+	printf("===============\n");
+	//free
+	free(buffer);
 }
 //======================================================================
 int decrypt(char nom[]){
@@ -191,6 +191,9 @@ int decrypt(char nom[]){
 	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-256-cbc -iv \"%d\" -iter 100 -in %s.enc -out %s.txt",make_vector(nom),nom,nom);
 	returnvalue=system(buffer);
 	printf("===============\n");
+	//free
+	free(buffer);
+	
 	return returnvalue;
 }
 //======================================================================
@@ -199,6 +202,8 @@ void clear(char nom[]){
 	//todo mettre shred
 	snprintf(buffer,TAILLBUFFER , "rm %s",nom);
 	system(buffer);
+	//free
+	free(buffer);
 }
 //======================================================================
 void to_txt(char nom[],Trinom tri[]){
@@ -219,6 +224,9 @@ void to_txt(char nom[],Trinom tri[]){
 		fprintf(fd,"%s,%s,%s\n",tri[i].nom,tri[i].login,tri[i].mdp);
 	}
 	fclose(fd);
+	//free
+	free(name);
+	free(buffer);
 }
 //======================================================================
 void save_and_quit(char nom[],Trinom vault[]){
@@ -227,6 +235,8 @@ void save_and_quit(char nom[],Trinom vault[]){
 	char *name=(char*)malloc(TAILLBUFFER*sizeof(char));
 	snprintf(name, TAILLBUFFER, "%s.txt",nom);//+.txt
 	clear(name);	
+	//free
+	free(name);
 }
 //======================================================================
 Trinom *start(char nom []){
@@ -240,12 +250,15 @@ Trinom *start(char nom []){
 			printf("#####\n#####\n#####\n#####\n#####\n");
 			printf("Bad decrypt retry\n");
 			printf("#####\n");
+			//would you like to trye again ?
 			return (start(nom));
 		}
 		char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
-		snprintf(buffer,TAILLBUFFER , "%s.txt",nom);
+		snprintf(buffer,TAILLBUFFER , "%s.txt",nom);//+txt
 		Trinom* tri= extraire(buffer);
 		clear(buffer);
+		//free
+		free(buffer);
 		
 		return tri;
 	}
