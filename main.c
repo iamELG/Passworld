@@ -48,7 +48,7 @@ void viderBuffer(void){
 }
 //======================================================================
 Trinom *ajout(){
-	char nom[TAILLNOM], login[TAILLLOGIN], mdp[TAILLMOTDEPASS];//,valide;
+	char nom[TAILLNOM], login[TAILLLOGIN], mdp[TAILLMOTDEPASS];
 	
 	printf("nom:");
 	scanf("%100[a-zA-Z0-9]",nom);
@@ -141,7 +141,7 @@ Trinom *extraire(char *filename){
 	FILE *fd;
 	fd=fopen(filename,"r");
 	
-	if(fd==NULL){//le fichier de vault n'est pas le bon
+	if(fd==NULL){
 		printf("Fichier introuvable \n");
 		return NULL;
 	}
@@ -178,7 +178,6 @@ void encrypt(char nom[]){
 	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-256-cbc -iv \"%d\" -iter 100 -in %s.txt -out %s.enc",make_vector(nom),nom,nom);
 	(system(buffer));
 	printf("===============\n");
-	//free
 	free(buffer);
 }
 //======================================================================
@@ -189,7 +188,6 @@ int decrypt(char nom[]){
 	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-256-cbc -iv \"%d\" -iter 100 -in %s.enc -out %s.txt",make_vector(nom),nom,nom);
 	returnvalue=system(buffer);
 	printf("===============\n");
-	//free
 	free(buffer);
 	
 	return returnvalue;
@@ -206,7 +204,7 @@ void clear(char nom[]){
 //======================================================================
 void to_txt(char nom[],Trinom tri[]){
 	char *name=(char*)malloc(TAILLBUFFER*sizeof(char));
-	snprintf(name, TAILLBUFFER, "./%s.txt",nom);//+.txt
+	snprintf(name, TAILLBUFFER, "./%s.txt",nom);
 	
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 	snprintf(buffer,TAILLBUFFER , "touch %s",name);
@@ -231,7 +229,7 @@ void save_and_quit(char nom[],Trinom vault[]){
 	to_txt(nom,vault);
 	encrypt(nom);
 	char *name=(char*)malloc(TAILLBUFFER*sizeof(char));
-	snprintf(name, TAILLBUFFER, "%s.txt",nom);//+.txt
+	snprintf(name, TAILLBUFFER, "%s.txt",nom);
 	clear(name);	
 	//free
 	free(name);
@@ -288,7 +286,7 @@ void menu(char nom [],Trinom vault[]){
 			ajout_select(vault);
 		}
 		else if(select==4){
-			printf("44\n");//todo
+			printf("44\n");
 		}
 		else if(select==5){
 			save_and_quit(nom,vault);
