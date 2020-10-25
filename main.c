@@ -162,23 +162,17 @@ Trinom *extraire(char *filename){
 	return tri;
 }
 //======================================================================
-int make_vector(char mot[]){
-	int total=0;
-	int i=0;
-	while(mot[i]!='\0'){
-		total+=(i+1)*mot[i];
-		++i;
-	}
-	return total;
-}
-//======================================================================
 void encrypt(char nom[]){
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
+	int returnvalue=-1;
 	printf("===============\n");
 	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-256-cbc -iter 100 -in %s.txt -out %s.enc",nom,nom);
-	(system(buffer));
+	returnvalue=system(buffer);
 	printf("===============\n");
 	free(buffer);
+	
+	if (returnvalue!=0)//if bad password read, try again
+		encrypt(nom);
 }
 //======================================================================
 int decrypt(char nom[]){
@@ -230,6 +224,8 @@ void save_and_quit(char nom[],Trinom vault[]){
 	encrypt(nom);
 	char *name=(char*)malloc(TAILLBUFFER*sizeof(char));
 	snprintf(name, TAILLBUFFER, "%s.txt",nom);
+	
+	
 	clear(name);	
 	//free
 	free(name);
