@@ -175,7 +175,7 @@ int make_vector(char mot[]){
 void encrypt(char nom[]){
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 	printf("===============\n");
-	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-256-cbc -iv \"%d\" -iter 100 -in %s.txt -out %s.enc",make_vector(nom),nom,nom);
+	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-256-cbc -iter 100 -in %s.txt -out %s.enc",nom,nom);
 	(system(buffer));
 	printf("===============\n");
 	free(buffer);
@@ -185,7 +185,7 @@ int decrypt(char nom[]){
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 	int returnvalue=-1;
 	printf("===============\n");
-	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-256-cbc -iv \"%d\" -iter 100 -in %s.enc -out %s.txt",make_vector(nom),nom,nom);
+	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-256-cbc -iter 100 -in %s.enc -out %s.txt",nom,nom);
 	returnvalue=system(buffer);
 	printf("===============\n");
 	free(buffer);
