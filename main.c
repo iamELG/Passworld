@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TAILLNOM 100
-#define TAILLLOGIN 100
-#define TAILLMOTDEPASS 200
+#define TAILLNOM 101
+#define TAILLLOGIN 101
+#define TAILLMOTDEPASS 201
 #define TAILLBUFFER 402
 
 
@@ -16,6 +16,7 @@ typedef struct trinom{
 //======================================================================
 Trinom *alloue(char *nom, char *login, char *mdp);
 void afficher_mdp(Trinom afficher);
+void viderBuffer(void);
 Trinom *ajout(void);
 void afficher_nom(Trinom afficher,int valeur);
 void afficher_list(Trinom afficher[]);
@@ -24,7 +25,6 @@ void ajout_select(Trinom tri[]);
 Trinom *extraire_ligne(char ligne[]);
 Trinom *extraire(char *filename);
 int make_vector(char mot[]);
-void test_make_vector(void);
 void encrypt(char nom[]);
 int decrypt(char nom[]);
 void clear(char nom[]);
@@ -42,17 +42,23 @@ Trinom *alloue(char *nom, char *login, char *mdp){
 	return tmp;
 }
 //======================================================================
+void viderBuffer(void){
+  int c;
+  while((c=getchar()) != EOF && c != '\n');
+}
+//======================================================================
 Trinom *ajout(){
-	char nom[TAILLNOM], login[TAILLLOGIN], mdp[TAILLMOTDEPASS];//,valide;
+	char nom[TAILLNOM], login[TAILLLOGIN], mdp[TAILLMOTDEPASS];
 	
 	printf("nom:");
-	scanf("%s",nom);
+	scanf("%100[a-zA-Z0-9]",nom);
+	viderBuffer();
 	printf("login:");
-	scanf("%s",login);
+	scanf("%100[a-zA-Z0-9]",login);
+	viderBuffer();
 	printf("mot de passe:");
-	scanf("%s",mdp);
-	//printf("Valider la saisie (o/n):");
-	//check saisie str cmp	
+	scanf("%200[a-zA-Z0-9]",mdp);
+	viderBuffer();
 
 	return alloue(nom,login,mdp);
 }
@@ -82,7 +88,8 @@ void afficher_select(Trinom afficher[]){
 	int select;
 	printf("=======================================\n");
 	printf("Sélectionner le numéro de l'identifiant/mdp que vous voulez voir :");
-	scanf("%d",&select);
+	scanf("%5d",&select);
+	viderBuffer();
 	printf("=======================================\n");
 	afficher_mdp(afficher[select]);
 	printf("=======================================\n\n");
@@ -134,7 +141,7 @@ Trinom *extraire(char *filename){
 	FILE *fd;
 	fd=fopen(filename,"r");
 	
-	if(fd==NULL){//le fichier de vault n'est pas le bon
+	if(fd==NULL){
 		printf("Fichier introuvable \n");
 		return NULL;
 	}
@@ -165,22 +172,12 @@ int make_vector(char mot[]){
 	return total;
 }
 //======================================================================
-void test_make_vector(){
-	printf("bob=%d\n",make_vector("bob"));
-	printf("aob=%d\n",make_vector("aob"));
-	printf("boa=%d\n",make_vector("boa"));
-	printf("alice=%d\n",make_vector("alice"));
-	printf("aliceetbob=%d\n",make_vector("aliceetbob"));
-	printf("tmp=%d\n",make_vector("tmp"));
-}
-//======================================================================
 void encrypt(char nom[]){
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 	printf("===============\n");
-	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-256-cbc -iv \"%d\" -iter 100 -in %s.txt -out %s.enc",make_vector(nom),nom,nom);
+	snprintf(buffer,TAILLBUFFER , "openssl enc -e -a -aes-256-cbc -iter 100 -in %s.txt -out %s.enc",nom,nom);
 	(system(buffer));
 	printf("===============\n");
-	//free
 	free(buffer);
 }
 //======================================================================
@@ -188,10 +185,9 @@ int decrypt(char nom[]){
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 	int returnvalue=-1;
 	printf("===============\n");
-	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-256-cbc -iv \"%d\" -iter 100 -in %s.enc -out %s.txt",make_vector(nom),nom,nom);
+	snprintf(buffer,TAILLBUFFER , "openssl enc -d -a -aes-256-cbc -iter 100 -in %s.enc -out %s.txt",nom,nom);
 	returnvalue=system(buffer);
 	printf("===============\n");
-	//free
 	free(buffer);
 	
 	return returnvalue;
@@ -208,7 +204,7 @@ void clear(char nom[]){
 //======================================================================
 void to_txt(char nom[],Trinom tri[]){
 	char *name=(char*)malloc(TAILLBUFFER*sizeof(char));
-	snprintf(name, TAILLBUFFER, "./%s.txt",nom);//+.txt
+	snprintf(name, TAILLBUFFER, "./%s.txt",nom);
 	
 	char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
 	snprintf(buffer,TAILLBUFFER , "touch %s",name);
@@ -233,36 +229,35 @@ void save_and_quit(char nom[],Trinom vault[]){
 	to_txt(nom,vault);
 	encrypt(nom);
 	char *name=(char*)malloc(TAILLBUFFER*sizeof(char));
-	snprintf(name, TAILLBUFFER, "%s.txt",nom);//+.txt
+	snprintf(name, TAILLBUFFER, "%s.txt",nom);
 	clear(name);	
 	//free
 	free(name);
 }
 //======================================================================
 Trinom *start(char nom []){
-	char select[10];
+	char select[2];
 	select[0]='\0';
 	printf("Déchiffer la vault (o/n)?");
-	scanf("%s",select);
+	scanf("%1s",select);
+	viderBuffer();
 	if(select[0]=='0'||select[0]=='O'||select[0]=='o'){
 		int bool=decrypt(nom);
 		if (bool!=0){
 			printf("#####\n#####\n#####\n#####\n#####\n");
 			printf("Bad decrypt retry\n");
 			printf("#####\n");
-			//would you like to trye again ?
 			return (start(nom));
 		}
 		char* buffer= (char*)malloc(TAILLBUFFER*sizeof(char));
-		snprintf(buffer,TAILLBUFFER , "%s.txt",nom);//+txt
+		snprintf(buffer,TAILLBUFFER , "%s.txt",nom);
 		Trinom* tri= extraire(buffer);
 		clear(buffer);
-		//free
 		free(buffer);
 		
 		return tri;
 	}
-	printf("Au revoir");
+	printf("Au revoir\n");
 	exit(0);
 }
 //======================================================================
@@ -278,7 +273,8 @@ void menu(char nom [],Trinom vault[]){
 		printf("5: Sauvegarder et quitter\n");
 		printf("6: Quitter (les modifications seront perdues)\n");
 		printf("Sélectionner le mode avec le numéro :");
-		scanf("%d",&select);
+		scanf("%1d",&select);
+		viderBuffer();
 	
 		if(select==1){
 			afficher_list(vault);
@@ -290,7 +286,7 @@ void menu(char nom [],Trinom vault[]){
 			ajout_select(vault);
 		}
 		else if(select==4){
-			printf("44\n");//todo
+			printf("44\n");
 		}
 		else if(select==5){
 			save_and_quit(nom,vault);
@@ -303,10 +299,10 @@ void menu(char nom [],Trinom vault[]){
 }
 //======================================================================
 int main(){
-	char nom[TAILLBUFFER];
+	char nom[TAILLNOM];
 	printf("Passworld - Gestionnaire de mot de passe - v0.9\n");
 	printf("Entrez un nom :");
-	scanf("%s",nom);
+	scanf("%100s",nom);
 	//-------
 	Trinom *vault=start(nom);
 	menu(nom,vault);
