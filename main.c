@@ -24,7 +24,6 @@ void afficher_select(Trinom afficher[]);
 void ajout_select(Trinom tri[]);
 Trinom *extraire_ligne(char ligne[]);
 Trinom *extraire(char *filename);
-int make_vector(char mot[]);
 void encrypt(char nom[]);
 int decrypt(char nom[]);
 void clear(char nom[]);
